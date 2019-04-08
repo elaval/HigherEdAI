@@ -1,0 +1,40 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="block m-t-xs"> <strong class="font-bold">{{userName}}</strong> </span>
+                        <span class="text-muted text-xs block">Settings <b class="caret"></b> </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="#">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    EDAT
+                </div>
+            </li>
+            <li [ngClass]="{active: activeRoute('evolucion-matricula')}">
+                <a [routerLink]="['evolucion-matricula']"><i class="fa fa-child"></i> <span class="nav-label">Evolución Matrícula</span></a>
+            </li>            
+            <li [ngClass]="{active: activeRoute('origen-escolar')}">
+                <a [routerLink]="['origen-escolar']"><i class="fa fa-child"></i> <span class="nav-label">Origen Escolar</span></a>
+            </li>
+            <li [ngClass]="{active: activeRoute('origen-ed-sup')}">
+                <a [routerLink]="['origen-ed-sup']"><i class="fa fa-child"></i> <span class="nav-label">Origen ES</span> </a>
+            </li>            
+            <li [ngClass]="{active: activeRoute('destino-ed-sup')}">
+                <a [routerLink]="['destino-ed-sup']"><i class="fa fa-child"></i> <span class="nav-label">Destino ES</span> </a>
+            </li>
+
+            <li>
+                <a [routerLink]="['/login']"><i class="fa fa-sign-in"></i> <span class="nav-label">Login</span> </a>
+            </li>
+            <li>
+                <a [routerLink]="['/register']"><i class="fa fa-pencil"></i> <span class="nav-label">Register</span> </a>
+            </li>
+        </ul>
+
+    </div>
+</nav>

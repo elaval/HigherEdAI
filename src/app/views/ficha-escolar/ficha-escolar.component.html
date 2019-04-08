@@ -1,0 +1,7 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <button class="btn btn-lg" *ngFor="let year of agnos" [class.btn-primary]="year==selectedYear" [class.btn-default]="year!=selectedYear" (mouseover)="changeYear(year)">{{year}}</button>
+  </div>
+</div>
+
+<app-td-evolucion-matricula [data]="data" [year]="selectedYear"></app-td-evolucion-matricula>

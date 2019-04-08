@@ -1,0 +1,4 @@
+<app-header></app-header>
+<div *ngIf="data">    
+    <li *ngFor="let item of data">{{item.nomb_inst}} | {{item.nomb_carrera}} | ({{item.count}})</li>
+</div>

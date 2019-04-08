@@ -1,0 +1,32 @@
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TIDE Intelligent Sound Analysis</a>
+        <form class="form-inline">
+            <button class="btn btn-primary my-2 my-sm-0 mr-2"
+            routerLink="/home" type="button">
+              Home
+            </button>
+          <label *ngIf="afAuth.user | async as user" class="text-light">
+            
+              {{user.displayName}}
+          </label>          
+
+          <div *ngIf="afAuth.user | async as user; else showLogin">
+              <button class="btn btn-primary my-2 my-sm-0 mr-2" (click)="logout()">Logout</button>
+          </div>
+          <ng-template #showLogin>
+              <p>Please login.</p>
+              <button class="btn btn-primary my-2 my-sm-0 mr-2" (click)="login()">Login</button>
+          </ng-template>
+          
+        </form>
+    </div>
+  </nav>
+  
+  
+  
+  <main role="main" class="container-fluid">
+    <h1>Test</h1>
+    <router-outlet></router-outlet>
+  </main>
+  

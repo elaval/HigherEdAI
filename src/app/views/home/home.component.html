@@ -1,0 +1,19 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<app-header></app-header>
+
+<div *ngIf="data">    
+    <li *ngFor="let item of data">{{item.nom_rbd}} |{{item.comuna_rbd}} |  ({{item.count}})</li>
+</div>
+
+
+<div *ngIf="validUser">
+  
+</div>
+<div *ngIf="!validUser">
+  <!--
+  <h2>This user is not enabled to access Sound reports. Contact soundset service</h2>
+
+  -->
+</div>
+  
+  
