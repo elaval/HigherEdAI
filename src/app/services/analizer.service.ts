@@ -23,6 +23,11 @@ export class AnalizerService {
     return top
   }
 
+  allSchools(data) {
+    const focusData = data && data.origenEscolar.filter((d) => d.rbd);
+    return focusData
+  }
+
   topCarreras(data) {
     const focusData = data && data.filter((d) => d.codigo_unico);
     const totalCount = focusData.reduce((memo, d) => memo + d.count, 0);

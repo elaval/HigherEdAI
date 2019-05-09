@@ -26,6 +26,7 @@ import { DestinoESComponent } from './views/destino-es/destino-es.component';
 import { FichaEscolarComponent } from './views/ficha-escolar/ficha-escolar.component';
 import { TdEvolucionMatriculaComponent } from './vis/td-evolucion-matricula/td-evolucion-matricula.component';
 import { EvolucionMatriculaComponent } from './views/evolucion-matricula/evolucion-matricula.component';
+import { TdOrigenEscolarComponent } from './vis/td-origen-escolar/td-origen-escolar.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { EvolucionMatriculaComponent } from './views/evolucion-matricula/evoluci
     DestinoESComponent,
     FichaEscolarComponent,
     TdEvolucionMatriculaComponent,
-    EvolucionMatriculaComponent
+    EvolucionMatriculaComponent,
+    TdOrigenEscolarComponent
   ],
   imports: [
     BrowserModule,

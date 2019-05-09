@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
   ) { 
 
     this.dataService.data.subscribe(data => {
-      this.data = this.analizerService.topSchools(data);
+      this.data = this.analizerService.allSchools(data);
     })
  
       
