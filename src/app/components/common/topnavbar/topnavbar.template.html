@@ -27,7 +27,7 @@
             <select [(ngModel)]="dataService.selectedCarrera" class="form-control" name="carrera" id="carrera"
             (change)="dataService.onSelectCarrera(dataService.selectedCarrera)"
             >
-                <option  *ngFor="let item of dataService.selectedSede.carreras" [ngValue]="item">{{item.nomb_carrera}}</option>
+                <option  *ngFor="let item of dataService.selectedSede.carreras" [ngValue]="item">{{item.nomb_carrera_version}}</option>
             </select>
         </form>
 

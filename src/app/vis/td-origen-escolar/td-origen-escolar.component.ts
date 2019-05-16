@@ -79,6 +79,8 @@ export class TdOrigenEscolarComponent extends D3VisComponent implements OnInit {
      .entries(this.data)})
 
     const root = this.pack(entries);
+
+    this.mainContainer.selectAll("g").remove()
     
     const node = this.mainContainer.append("g")
     .selectAll("g.circle")

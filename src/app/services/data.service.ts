@@ -37,8 +37,15 @@ export class DataService {
         this.http.get(url).subscribe(data => {
           this.directorio = _.chain(data)
             .groupBy(d => d["nomb_sede"])
-            .map((items,key) => ({sede:key, carreras:items}))
+            .map((items,key) => ({sede:key, carreras:_.sortBy(items, d => d["nomb_carrera"])}))
             .value();
+
+          _.each(this.directorio, (d) => {
+              _.each(d.carreras, e => {
+                e["nomb_carrera_version"] = `${e["nomb_carrera"]} (${e["codigo_unico"]})`
+              })
+            })
+
 
           this.selectedSede = this.directorio[0];
           this.selectedCarrera = this.selectedSede.carreras[0];
@@ -48,6 +55,16 @@ export class DataService {
       });
 
     })
+  }
+
+  getVersion(codigo) {
+    const rVersion = codigo.match(/.*V(.*)/);
+
+    if (! (rVersion && rVersion[1])) {
+      console.log("NO V")
+    }
+
+    return rVersion && rVersion[1];
   }
 
   getDataMatricula() {
