@@ -18,7 +18,10 @@ export class OrigenESComponent implements OnInit {
     ) 
   { 
       this.dataService.data.subscribe(data => {
-        this.data = this.analizerService.topCarreras(data.origenES);
+        this.data = this.analizerService.allCarreras(data.origenES);
+        
+        
+        //this.data = this.analizerService.topCarreras(data.origenES);
       })
   }
 

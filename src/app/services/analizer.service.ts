@@ -38,4 +38,11 @@ export class AnalizerService {
 
     return top
   }
+
+  allCarreras(data) {
+    const focusData = data && data.filter((d) => d.codigo_unico);
+
+    return focusData
+  }
+
 }
