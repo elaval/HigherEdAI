@@ -6,7 +6,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <a class="minimalize-styl-2 btn btn-primary " (click)="toggleNavigation()"><i class="fa fa-bars"></i> </a>
-            <a class="navbar-brand" href="#">Universidad Autónoma</a>
+            <a class="navbar-brand" href="#">{{dataService.selectedIE.nombre}}</a>
 
         </div>
 
@@ -19,15 +19,18 @@
         </ul>
 
         <form class="navbar-form navbar-left">
-            <select [(ngModel)]="dataService.selectedSede" class="form-control" name="sede" id="sede">
+            <select [(ngModel)]="dataService.selectedSede" class="form-control" name="sede" id="sede"
+            (change)="onSelectSede(dataService.selectedSede)">
                 <option  *ngFor="let item of dataService.directorio" [ngValue]="item">{{item.sede}}</option>
             </select>
         </form>
         <form class="navbar-form navbar-left">
-            <select [(ngModel)]="dataService.selectedCarrera" class="form-control" name="carrera" id="carrera"
+            <select *ngIf="carrerasByNivel" [(ngModel)]="dataService.selectedCarrera" class="form-control" name="carrera" id="carrera"
             (change)="dataService.onSelectCarrera(dataService.selectedCarrera)"
             >
-                <option  *ngFor="let item of dataService.selectedSede.carreras" [ngValue]="item">{{item.nomb_carrera_version}}</option>
+                <optgroup *ngFor="let item of carrerasByNivel" label="{{item.nivel}}">
+                    <option  *ngFor="let itemCarrera of item.carreras" [ngValue]="itemCarrera">{{itemCarrera.nomb_carrera_version}}</option>
+                </optgroup>
             </select>
         </form>
 
