@@ -18,7 +18,7 @@ export class DestinoESComponent implements OnInit {
     ) 
   { 
       this.dataService.data.subscribe(data => {
-        this.data = analizerService.allCarreras(data.destinoES);
+        this.data = data && analizerService.allCarreras(data.destinoES);
       })
   }
 
