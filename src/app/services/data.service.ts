@@ -186,6 +186,9 @@ export class DataService {
     this.selectedCarreraSubjet.next(carrera);
     
     const ref = this.storage.ref(`carreras/${codigoUnico}.json`);
+    
+    this.dataSubjet.next(null);
+
     ref.getDownloadURL().subscribe(url => {
       
       this.http.get(url).subscribe(data => {
