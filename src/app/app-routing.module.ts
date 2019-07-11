@@ -9,7 +9,7 @@ import { DestinoESComponent } from './views/destino-es/destino-es.component';
 import { OrigenESComponent } from './views/origen-es/origen-es.component';
 import { FichaEscolarComponent } from './views/ficha-escolar/ficha-escolar.component';
 import { EvolucionMatriculaComponent } from './views/evolucion-matricula/evolucion-matricula.component';
-
+import {DesercionEsComponent} from './views/desercion-es/desercion-es.component';
 const routes: Routes = [
   // Main redirect
   {path: '', redirectTo: 'carrera/evolucion-matricula', pathMatch: 'full'},
@@ -22,6 +22,7 @@ const routes: Routes = [
       {path: 'origen-ed-sup', component: OrigenESComponent},
       {path: 'origen-escolar', component: HomeComponent},
       {path: 'destino-ed-sup', component: DestinoESComponent},
+      {path: 'desercion-ed-sup', component: DesercionEsComponent}
     ]
   },
 

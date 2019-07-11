@@ -27,7 +27,10 @@ import { FichaEscolarComponent } from './views/ficha-escolar/ficha-escolar.compo
 import { TdEvolucionMatriculaComponent } from './vis/td-evolucion-matricula/td-evolucion-matricula.component';
 import { EvolucionMatriculaComponent } from './views/evolucion-matricula/evolucion-matricula.component';
 import { TdOrigenEscolarComponent } from './vis/td-origen-escolar/td-origen-escolar.component';
-
+import { DesercionEsComponent } from './views/desercion-es/desercion-es.component';
+import {Ng5SliderModule} from 'ng5-slider';
+import { TdDesercionEscolarComponent } from './vis/td-desercion-escolar/td-desercion-escolar.component';
+import {PredictionService} from './services/prediction.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +43,9 @@ import { TdOrigenEscolarComponent } from './vis/td-origen-escolar/td-origen-esco
     FichaEscolarComponent,
     TdEvolucionMatriculaComponent,
     EvolucionMatriculaComponent,
-    TdOrigenEscolarComponent
+    TdOrigenEscolarComponent,
+    DesercionEsComponent,
+    TdDesercionEscolarComponent
   ],
   imports: [
     BrowserModule,
@@ -53,12 +58,14 @@ import { TdOrigenEscolarComponent } from './vis/td-origen-escolar/td-origen-esco
     NgbModule,
     HttpClientModule,
     ReactiveFormsModule,
-    LayoutsModule
+    LayoutsModule,
+    Ng5SliderModule
   ],
   providers: [
     AuthService,
     S3ServiceService,
     DataService,
+    PredictionService,
     { provide: StorageBucket, useValue: 'educacion-ai.appspot.com' }
   ],
   bootstrap: [AppComponent]
