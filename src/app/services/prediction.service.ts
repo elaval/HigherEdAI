@@ -9,7 +9,7 @@ import * as tf from '@tensorflow/tfjs';
 export class PredictionService {
   dataTraining: any;
   model: any;
-  urlModel = '/assets/models/';
+  urlModel = 'assets/models/';
   constructor(private http: HttpClient) { }
 
   PredictionModel(dataPredict, keyData = '') {
