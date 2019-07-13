@@ -12,12 +12,13 @@ export class TdDesercionEscolarComponent implements OnInit, OnChanges {
 
   @Input()
   data: DataPrediction[];
-
-  margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  id: string;
+  // margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  margin = { top: 20, right: 0, bottom: 30, left: 5 };
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {this.id = Math.floor((Math.random() * 100000) + 1).toString();}
 
   ngOnChanges(): void {
     if (!this.data) { return; }
@@ -26,12 +27,15 @@ export class TdDesercionEscolarComponent implements OnInit, OnChanges {
   }
 
 private createChart(): void {
-    d3.select('svg').remove();
     const element = this.chartContainer.nativeElement;
+    d3.select(element).select('svg').remove();
+    // TODO Mejorar el despliegue del tooltip
+    d3.select(element).select('div').remove();
     const height = 300;
-    const width = 800; // element.offsetWidth
+    const width = element.offsetWidth; //
     const data = this.data;
-    const tooltip = d3.select('body').append('div').attr('class', 'toolTip');
+    // const tooltip = d3.select('body').append('div').attr('class', 'toolTip');
+    const tooltip = d3.select(element).append('div').attr('class', 'tooltip').style('opacity', 0);
     const svg = d3.select(element).append('svg')
       .attr('width', width + 'px')
       .attr('height', height + 'px');
@@ -77,13 +81,14 @@ private createChart(): void {
       .attr('width', x.bandwidth())
       .attr('height', d => contentHeight - y(d.value))
       .attr('fill', '#beaed4')
-      .on('mousemove', (d) => {
-            tooltip
-              .style('left', d3.event.pageX - 50 + 'px')
-              .style('top', d3.event.pageY - 70 + 'px')
-              .style('display', 'inline-block')
-              .html((d.name) + '<br>' + (d.value));
-      }).on('mouseout', (d) => { tooltip.style('display', 'none'); });
+      .on('mouseover', (d) => {
+    tooltip.transition().duration(200).style('opacity', 0.9);
+    tooltip.html(`Deserción: <span>${Math.round(d.value * 1000) / 10}%</span>`)
+      .style('left', `${d3.event.pageX - 200}px`)
+      .style('top', `${(d3.event.pageY - 230)}px`)
+      .style('display', 'inline-block');
+  })
+  .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0));
   }
 
 }

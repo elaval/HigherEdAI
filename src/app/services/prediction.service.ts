@@ -7,19 +7,22 @@ import * as tf from '@tensorflow/tfjs';
   providedIn: 'root'
 })
 export class PredictionService {
-  dataTraining: any;
-  model: any;
   urlModel = 'assets/models/';
+  // dataTraining: any;
+  // model: any;
+  // modelName: any;
+  allModelAvailables: {name: string; training: object; model: any; }[] = [];
   constructor(private http: HttpClient) { }
-
-  PredictionModel(dataPredict, keyData = '') {
+  PredictionModel(dataPredict, keyData = '', modelName = '', model) {
       const dataResults = new Array();
       const tensor = new Array();
+      const features = _.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})).training.features;
+      // const model = _.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})).model;
       let valueNotExist =  new Array();
       // validar que los datos a predecir del tipo oneHot tengan valores validos en la data entrenada.
-      _.forEach(this.dataTraining.features, (data, i) => {
+      _.forEach(features, (data, i) => {
           if (data.type === 'one_hot') {
-              const dataDiff =_.map(dataPredict[i], (val, vi) => {
+              const dataDiff = _.map(dataPredict[i], (val, vi) => {
                   return _.indexOf(data.values, val) === -1 ? vi : null;
               });
               valueNotExist = _.union(valueNotExist, _.without(dataDiff, null));
@@ -33,14 +36,14 @@ export class PredictionService {
       if (_.isEmpty(_.get(dataPredict, _.findLastKey(dataPredict)))) {
           return dataResults;
       }
-      _.forEach(this.dataTraining.features, (data,i) => {
+      _.forEach(features, (data, i) => {
           const values = new Array();
           if (data.type === 'one_hot') {
               // Replace categorical values by '-1' when is Null or NaN
               dataPredict[i] = _.map(dataPredict[i], (val, vi) => {
                   return val === null ? -1 : val;
               });
-              const collectionTraining =  _.map(this.dataTraining.features[i].values, (value) => {
+              const collectionTraining =  _.map(features[i].values, (value) => {
                     return value.toUpperCase();
               });
               _.forEach(dataPredict[i], (k, row) => {
@@ -63,7 +66,7 @@ export class PredictionService {
 
       const tensorsEval = (tensor.length > 1) ? tf.concat(tensor, 1) : tensor[0];
       // read model and predict
-      const results = this.model.predict(tensorsEval);
+      const results = model.predict(tensorsEval);
       const resultsSplit = _.chunk(Array.from(results.dataSync()), results.shape[1]);
       _.forEach(resultsSplit, (val, key) => {
           const data = {labels: [], results: val};
@@ -76,10 +79,10 @@ export class PredictionService {
   }
   getPrediction(modelN, dataPredict, keyData) {
     return new Promise((resolve, reject) => {
-        this.loadDataTraining(modelN).then(() => {
-          if (this.validatePredictData(dataPredict)) {
-              this.loadModel(modelN).then(() => {
-                resolve(this.PredictionModel(dataPredict, keyData));
+          this.loadDataTraining(modelN).then(() => {
+          if (this.validatePredictData(dataPredict, modelN)) {
+                this.loadModel(modelN).then((model) => {
+                resolve(this.PredictionModel(dataPredict, keyData, modelN, model));
               });
           }
         }).catch(err => {reject(err); });
@@ -87,27 +90,31 @@ export class PredictionService {
   }
   loadModel(modelName) {
     return new Promise((resolve, reject) => {
-      if (this.model) {
-        resolve(this.model);
+      /*if (this.allModelAvailables && _.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})).model) {
+        resolve(this.allModelAvailables);
       } else {
         tf.loadLayersModel(this.urlModel.concat(modelName, '/model.json')).then(model => {
-          this.model = model;
-          resolve(model);
+          _.set(_.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})), 'model', model);
+          resolve(this.allModelAvailables);
         });
-      }
+      }*/
+      tf.loadLayersModel(this.urlModel.concat(modelName, '/model.json')).then(model => {
+          _.set(_.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})), 'model', model);
+          resolve(model);
+      });
     });
   }
 
   loadDataTraining(modelName) {
     return new Promise((resolve, reject) => {
-      if (this.dataTraining) {
-        resolve(this.dataTraining);
+      if (this.allModelAvailables && _.findKey(this.allModelAvailables, { name: modelName })) {
+        resolve(this.allModelAvailables);
       } else {
         this.http.get(this.urlModel.concat(modelName, '/', modelName, '.json'))
         .toPromise()
         .then(data => {
-          this.dataTraining = data;
-          resolve(data);
+          this.allModelAvailables.push({name: modelName, training: data, model: []});
+          resolve(this.allModelAvailables);
         })
         .catch(err => {
           reject(err);
@@ -116,14 +123,15 @@ export class PredictionService {
     });
   }
 
-  validatePredictData(dataPredict) {
+  validatePredictData(dataPredict, modelName) {
     if (typeof dataPredict !== 'undefined' && this.isJSON(dataPredict)) {
-        const fromTraining = Object.keys(this.dataTraining.features);
+        const features = _.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})).training.features;
+        const fromTraining = Object.keys(features);
         const fromPredict = Object.keys(dataPredict);
         // Comparison of arrays using name of keys
         if (this.compareKeys(fromTraining, fromPredict)) {
             let shapeQty = 0;
-            _.forEach(this.dataTraining.features, (data, i) => {
+            _.forEach(features, (data, i) => {
                 if (shapeQty !== dataPredict[i].length && shapeQty !== 0) { return false; }
                 shapeQty = dataPredict[i].length;
             });
@@ -135,7 +143,7 @@ export class PredictionService {
 
     isJSON(item) {
         item = typeof item !== 'string' ? JSON.stringify(item) : item;
-        try { item = JSON.parse(item); } catch (e) { return false;}
+        try { item = JSON.parse(item); } catch (e) { return false; }
         if (typeof item === 'object' && item !== null) { return true; }
         return false;
     }

@@ -15,7 +15,7 @@ export class DataService {
   selectedCarrera: Function | (() => string) | (() => string) | (() => Object) | ((v: string | number | symbol) => boolean) | ((v: Object) => boolean) | ((v: string | number | symbol) => boolean);
   dataCarrera: Object;
   data_matricula: any;
-
+  carrerasPorSedes: object;
   dataSubjet = new BehaviorSubject(null);
   data = this.dataSubjet.asObservable();
 
@@ -123,6 +123,26 @@ export class DataService {
         })
       }
     })
+  }
+
+  getCarrerasPorSedes(codIE) {
+    return new Promise((resolve, reject) => {
+      if (this.carrerasPorSedes) {
+        resolve(this.carrerasPorSedes);
+      } else {
+        this.http.get(`assets/data/ies/${codIE}/carreras.json`)
+        .toPromise()
+        .then(data => {
+          const dataPorCarrera = _.chain(data).groupBy(d => d.nomb_carrera).map((items, key) => (
+            {carrera: key, sedes:_.sortBy(items, d => d.nomb_sede)})).sortBy(d => d.carrera).value();
+          this.carrerasPorSedes = dataPorCarrera;
+          resolve(dataPorCarrera);
+        })
+        .catch(err => {
+          reject(err);
+        });
+      }
+    });
   }
 
   processCarreras(data) {

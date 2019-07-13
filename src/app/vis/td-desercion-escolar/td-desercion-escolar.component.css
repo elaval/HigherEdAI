@@ -1,10 +1,14 @@
-.toolTip {
+.tooltip{
+  background-color: black;
+  color: white;
+  padding: 3px;
+  border: 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  height: 20px;
+  pointer-events: none;
   position: absolute;
-  display: none;
-  min-width: 80px;
-  height: auto;
-  background: none repeat scroll 0 0 #ffffff;
-  border: 1px solid #6F257F;
-  padding: 14px;
   text-align: center;
+  width: 120px;
 }
