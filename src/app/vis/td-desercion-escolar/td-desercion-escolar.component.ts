@@ -29,13 +29,15 @@ export class TdDesercionEscolarComponent implements OnInit, OnChanges {
 private createChart(): void {
     const element = this.chartContainer.nativeElement;
     d3.select(element).select('svg').remove();
-    // TODO Mejorar el despliegue del tooltip
-    d3.select(element).select('div').remove();
     const height = 300;
     const width = element.offsetWidth; //
     const data = this.data;
-    // const tooltip = d3.select('body').append('div').attr('class', 'toolTip');
-    const tooltip = d3.select(element).append('div').attr('class', 'tooltip').style('opacity', 0);
+    const tooltip = (!d3.select('body').select('div.tooltip').empty()) ?
+      d3.select('body').select('div.tooltip') :
+      d3.select('body').append('div').attr('class', 'tooltip')
+        .style('opacity', 0).style('background', '#000')
+        .style('padding', '5px');
+    // const tooltip = d3.select(element).append('div').attr('class', 'tooltip').style('opacity', 0);
     const svg = d3.select(element).append('svg')
       .attr('width', width + 'px')
       .attr('height', height + 'px');
@@ -82,11 +84,13 @@ private createChart(): void {
       .attr('height', d => contentHeight - y(d.value))
       .attr('fill', '#beaed4')
       .on('mouseover', (d) => {
-    tooltip.transition().duration(200).style('opacity', 0.9);
-    tooltip.html(`Deserción: <span>${Math.round(d.value * 1000) / 10}%</span>`)
-      .style('left', `${d3.event.pageX - 200}px`)
-      .style('top', `${(d3.event.pageY - 230)}px`)
-      .style('display', 'inline-block');
+        tooltip.transition().duration(200).style('opacity', 0.9);
+        tooltip.html(`Deserción: <span>${Math.round(d.value * 1000) / 10}%</span>`)
+          .style('left', `${d3.event.pageX}px`)
+          .style('top', `${(d3.event.pageY - 40)}px`)
+          // .style('left', `${d3.event.clientX - element.getBoundingClientRect().x - 10}px`)
+          // .style('top', `${(d3.event.clientY - element.getBoundingClientRect().y -  - 10)}px`)
+          .style('display', 'inline-block');
   })
   .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0));
   }
