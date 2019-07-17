@@ -40,6 +40,12 @@ export class TopnavbarComponent {
         return groups
     }
 
+    onSelectIes(ies) {
+        this.dataService.getCarreras(ies.cod_inst).then(d => {
+            this.carrerasByNivel = this.carrerasGroupedByNivel(this.dataService.selectedSede.carreras);
+        });
+    }
+
     onSelectSede(sede) {
         this.carrerasByNivel = this.carrerasGroupedByNivel(sede.carreras)
         this.dataService.onSelectCarrera(sede.carreras[0])

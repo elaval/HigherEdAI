@@ -22,26 +22,25 @@ export class DesercionEsComponent implements OnInit {
       step: 10,
       disabled: false
   };
-  carrera: any;
+  ies: any;
   sede: any;
+  carrera: any;
   carrerasPorSede: any;
 
   constructor(private dataService: DataService, private predictionService: PredictionService) {}
   ngOnInit() {
     // TODO llamar selectedCarreraObservable al obtener respuesta desde getCarrerasPorSedes
-    this.dataService.getCarrerasPorSedes(39).then((data) => {
-      this.carrerasPorSede = data;
-      this.calcularPrediccionPorNEM();
-      this.calcularPrediccionPorSede();
-    });
     this.dataService.selectedCarreraObservable
       .subscribe(carrera => {
         if (carrera && carrera.codigo_unico) {
           this.carrera = carrera.nomb_carrera;
-          this.sede = _.replace(carrera.nomb_sede, /SEDE /g, '');
-          console.log(carrera);
-          this.calcularPrediccionPorNEM();
-          this.calcularPrediccionPorSede();
+          this.sede = _.replace(_.replace(carrera.nomb_sede, /CAMPUS /g, ''), /SEDE /g, '');
+          this.ies = this.dataService.selectedIE;
+          this.dataService.getCarrerasPorSedes(this.ies.cod_inst).then((data) => {
+            this.carrerasPorSede = data;
+            this.calcularPrediccionPorNEM();
+            this.calcularPrediccionPorSede();
+          });
         }
       });
   }
@@ -59,7 +58,8 @@ export class DesercionEsComponent implements OnInit {
   calcularPrediccionPorNEM() {
     if (!this.sede || _.isUndefined(this.carrerasPorSede)) { return; }
     let dataJson = {carrera_comuna_sede: [], carrera_nomb_carrera: [], escolar_nem: [] };
-    let modelName = 'ussebastian_carrera_sede_nem';
+    let modelName = (this.ies.nombre.toLowerCase().indexOf('autónoma')) ? 'autonoma' : 'ussebastian';
+    modelName += '_carrera_sede_nem';
     if (this.enabledPercentil) {
       dataJson = _.merge(dataJson, {escolar_percentil: [] });
       modelName += '_percentil';
@@ -88,14 +88,15 @@ export class DesercionEsComponent implements OnInit {
   calcularPrediccionPorSede() {
     if (!this.sede || _.isUndefined(this.carrerasPorSede)) { return; }
     let dataJson = {carrera_comuna_sede: [], carrera_nomb_carrera: []};
-    let modelName = 'ussebastian_carrera_sede';
+    let modelName = (this.ies.nombre.toLowerCase().indexOf('autónoma')) ? 'autonoma' : 'ussebastian';
+    modelName += '_carrera_sede';
     if (this.enabledPercentil) {
       dataJson = _.merge(dataJson, {escolar_percentil: [] });
       modelName += '_percentil';
     }
     const filterSede = _.chain(this.carrerasPorSede).filter({ carrera: this.carrera }).value();
     _.forEach(_.uniqBy(_.map(filterSede[0].sedes, 'nomb_sede')), (data) => {
-        dataJson.carrera_comuna_sede.push(_.replace(data, /SEDE /g, ''));
+        dataJson.carrera_comuna_sede.push(_.replace(_.replace(data, /CAMPUS /g, ''), /SEDE /g, ''));
         dataJson.carrera_nomb_carrera.push(this.carrera);
         if (this.enabledPercentil) {
           _.get(dataJson, 'escolar_percentil').push(this.selectedPercentil);
@@ -106,8 +107,6 @@ export class DesercionEsComponent implements OnInit {
       _.forEach(data, (val, i) => {
           jsonResults.push({name: val.labels[0], value: val.results[1]});
       });
-      console.log('this.dataPredictionSede');
-      console.log(jsonResults);
       this.dataPredictionSede = jsonResults;
     })
     .catch(err => {

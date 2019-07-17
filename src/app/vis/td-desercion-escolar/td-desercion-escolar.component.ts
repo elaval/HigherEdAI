@@ -12,9 +12,11 @@ export class TdDesercionEscolarComponent implements OnInit, OnChanges {
 
   @Input()
   data: DataPrediction[];
+  @Input()
+  destacar = [];
   id: string;
   // margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  margin = { top: 20, right: 0, bottom: 30, left: 5 };
+  margin = { top: 20, right: 0, bottom: 30, left: 40 };
 
   constructor() { }
 

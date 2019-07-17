@@ -90,14 +90,6 @@ export class PredictionService {
   }
   loadModel(modelName) {
     return new Promise((resolve, reject) => {
-      /*if (this.allModelAvailables && _.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})).model) {
-        resolve(this.allModelAvailables);
-      } else {
-        tf.loadLayersModel(this.urlModel.concat(modelName, '/model.json')).then(model => {
-          _.set(_.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})), 'model', model);
-          resolve(this.allModelAvailables);
-        });
-      }*/
       tf.loadLayersModel(this.urlModel.concat(modelName, '/model.json')).then(model => {
           _.set(_.get(this.allModelAvailables,_.findKey(this.allModelAvailables, {name: modelName})), 'model', model);
           resolve(model);

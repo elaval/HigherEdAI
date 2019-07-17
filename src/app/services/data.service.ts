@@ -96,13 +96,8 @@ export class DataService {
 
   processIEs(data) {
     this.ies = data;
-    this.selectedIE = this.ies[1];
+    this.selectedIE = this.ies[0];
     this.getCarreras(this.selectedIE["cod_inst"]);
-  }
-
-  onSelectedIE(ie) {
-    this.selectedIE = ie;
-    this.getCarreras(ie["cod_inst"]);
   }
 
   getCarreras(codIE) {
@@ -157,8 +152,6 @@ export class DataService {
             e["nomb_carrera_version"] = `${e["nomb_carrera"]} (${e["codigo_unico"]})`
           })
         })
-
-
       this.selectedSede = this.directorio[0];
       this.selectedCarrera = this.selectedSede.carreras[0];
       this.onSelectCarrera(this.selectedCarrera);
