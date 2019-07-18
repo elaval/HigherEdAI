@@ -13,7 +13,7 @@ export class TdDesercionEscolarComponent implements OnInit, OnChanges {
   @Input()
   data: DataPrediction[];
   @Input()
-  destacar = [];
+  destacar = '';
   id: string;
   // margin = { top: 20, right: 20, bottom: 30, left: 40 };
   margin = { top: 20, right: 0, bottom: 30, left: 40 };
@@ -34,10 +34,11 @@ private createChart(): void {
     const height = 300;
     const width = element.offsetWidth; //
     const data = this.data;
+    const destacar = this.destacar;
     const tooltip = (!d3.select('body').select('div.tooltip').empty()) ?
       d3.select('body').select('div.tooltip') :
       d3.select('body').append('div').attr('class', 'tooltip')
-        .style('opacity', 0).style('background', '#000')
+        .style('opacity', 0).style('background', '#000').style('color', '#FFF')
         .style('padding', '5px');
     // const tooltip = d3.select(element).append('div').attr('class', 'tooltip').style('opacity', 0);
     const svg = d3.select(element).append('svg')
@@ -84,10 +85,12 @@ private createChart(): void {
       .attr('y', d => y(d.value))
       .attr('width', x.bandwidth())
       .attr('height', d => contentHeight - y(d.value))
-      .attr('fill', '#beaed4')
+      .attr('fill', (d) => {
+          return d.name === destacar ? '#52718e' : '#beaed4';
+      })
       .on('mouseover', (d) => {
         tooltip.transition().duration(200).style('opacity', 0.9);
-        tooltip.html(`Deserción: <span>${Math.round(d.value * 1000) / 10}%</span>`)
+        tooltip.html(`<strong>${d.name}</strong> <br/><strong>Deserción:</strong> <span>${Math.round(d.value * 1000) / 10}%</span>`)
           .style('left', `${d3.event.pageX}px`)
           .style('top', `${(d3.event.pageY - 40)}px`)
           // .style('left', `${d3.event.clientX - element.getBoundingClientRect().x - 10}px`)

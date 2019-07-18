@@ -9,12 +9,12 @@
 </div>
 
 <div  class="row">
-  <div class="col-xs-12 col-md-7">
+  <div class="col-xs-12">
       <h3>NEM</h3>
       <app-td-desercion-escolar [data]="dataPredictionNEM"></app-td-desercion-escolar>
       <div *ngIf="!dataPredictionNEM"><h3>No existen registros que coincidan con los filtros seleccionados</h3></div>
   </div>
-  <div class="col-xs-12 col-md-5">
+  <div class="col-xs-12">
       <h3>SEDES</h3>
       <app-td-desercion-escolar [destacar]="sede" [data]="dataPredictionSede"></app-td-desercion-escolar>
       <div *ngIf="!dataPredictionSede"><h3>No existen registros que coincidan con los filtros seleccionados</h3></div>

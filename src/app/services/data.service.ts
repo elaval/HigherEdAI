@@ -14,8 +14,8 @@ export class DataService {
   selectedSede: { sede: string; carreras: (Function | (() => string) | (() => string) | (() => Object) | ((v: string | number | symbol) => boolean) | ((v: Object) => boolean) | ((v: string | number | symbol) => boolean))[]; };
   selectedCarrera: Function | (() => string) | (() => string) | (() => Object) | ((v: string | number | symbol) => boolean) | ((v: Object) => boolean) | ((v: string | number | symbol) => boolean);
   dataCarrera: Object;
-  data_matricula: any;
-  carrerasPorSedes: object;
+  data_matricula= {};
+  carrerasPorSedes = {};
   dataSubjet = new BehaviorSubject(null);
   data = this.dataSubjet.asObservable();
 
@@ -122,15 +122,15 @@ export class DataService {
 
   getCarrerasPorSedes(codIE) {
     return new Promise((resolve, reject) => {
-      if (this.carrerasPorSedes) {
-        resolve(this.carrerasPorSedes);
+      if (_.has(this.carrerasPorSedes, codIE)) {
+        resolve(this.carrerasPorSedes[codIE]);
       } else {
         this.http.get(`assets/data/ies/${codIE}/carreras.json`)
         .toPromise()
         .then(data => {
           const dataPorCarrera = _.chain(data).groupBy(d => d.nomb_carrera).map((items, key) => (
             {carrera: key, sedes:_.sortBy(items, d => d.nomb_sede)})).sortBy(d => d.carrera).value();
-          this.carrerasPorSedes = dataPorCarrera;
+          this.carrerasPorSedes[codIE] = dataPorCarrera;
           resolve(dataPorCarrera);
         })
         .catch(err => {
@@ -162,15 +162,15 @@ export class DataService {
 
   getDataMatricula(ie) {
     return new Promise((resolve, reject) => {
-      if (this.data_matricula) {
-        resolve(this.data_matricula)
+      if (this.data_matricula[ie.cod_inst]) {
+        resolve(this.data_matricula[ie.cod_inst]);
       } else {
-        const ref = this.storage.ref('ies/39/matriculaAnual/data.json');
+        const ref = this.storage.ref(`ies/${ie.cod_inst}/matriculaAnual/data.json`);
         ref.getDownloadURL().subscribe(url => {
           this.http.get(url).toPromise()
           .then(data => {
-            this.data_matricula = data;
-            resolve(data)
+            this.data_matricula[ie.cod_inst] = data;
+            resolve(data);
           })
           .catch(err => {
             reject(err);
